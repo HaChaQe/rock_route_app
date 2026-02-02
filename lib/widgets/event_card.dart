@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import '../views/details/detail_view.dart';
+import '../models/event_model.dart';
+import 'package:go_router/go_router.dart';
 
 class EventCard extends StatelessWidget {
-  const EventCard({super.key});
+  final Event event;
+  const EventCard({super.key, required this.event});
 
   @override
   Widget build(BuildContext context) {
@@ -20,10 +22,9 @@ class EventCard extends StatelessWidget {
         // Tıklama efektinin rengini hafif beyaz yapalım ki belli olsun
         splashColor: Colors.white30,
         onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const DetailView()),
-          );
+          // Artık sayfayı direkt açmıyoruz, adrese (URL) gidiyoruz.
+          // Router arka planda ID'yi alıp doğru veriyi bulacak.
+          context.push('/details/${event.id}');
         },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -33,10 +34,13 @@ class EventCard extends StatelessWidget {
               // Böylece resim kartla bütünleşiyor.
               borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
               child: Image.asset(
-                "assets/images/img1.jpg",
+                event.imageUrl,
                 height: 200,
                 width: double.infinity,
                 fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(height: 200, color: Colors.grey, child: const Center(child: Icon(Icons.error)));
+                },
               ),
             ),
 
@@ -46,7 +50,7 @@ class EventCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "%100 Metal Sunar: Mighty Metal",
+                    event.title,
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
@@ -59,11 +63,11 @@ class EventCard extends StatelessWidget {
                     children: [
                       const Icon(Icons.calendar_today, size: 16, color: Colors.grey),
                       const SizedBox(width: 4),
-                      const Text("02 Şubat 2026", style: TextStyle(color: Colors.grey)),
+                      Text(event.date, style: TextStyle(color: Colors.grey)),
                       const SizedBox(width: 16),
                       const Icon(Icons.location_on, size: 16, color: Colors.grey),
                       const SizedBox(width: 4),
-                      const Text("Bursa, Jolly Joker", style: TextStyle(color: Colors.grey)),
+                      Text(event.locationName, style: TextStyle(color: Colors.grey)),
                     ],
                   )
                   

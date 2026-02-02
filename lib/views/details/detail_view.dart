@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import '../../models/event_model.dart';
+import 'package:go_router/go_router.dart';
 
 class DetailView extends StatelessWidget {
-  const DetailView({super.key});
+
+  final Event event;
+  const DetailView({super.key, required this.event});
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +16,7 @@ class DetailView extends StatelessWidget {
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => context.go('/'),
         ),
       ),
 
@@ -20,7 +24,7 @@ class DetailView extends StatelessWidget {
         children: [
           //arkaplan resmi
           Positioned.fill(
-            child: Image.asset("assets/images/img1.jpg",
+            child: Image.asset(event.imageUrl,
             fit: BoxFit.cover,
             )
           ),
@@ -51,7 +55,7 @@ class DetailView extends StatelessWidget {
               children: [
                 //Başlık
                 Text(
-                  "%100 Metal Sunar: Mighty Metal",
+                  event.title,
                   style: Theme.of(context).textTheme.displayMedium?.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
@@ -63,14 +67,14 @@ class DetailView extends StatelessWidget {
 
                 //tarih saat
                 Row(
-                  children: const [
+                  children: [
                     Icon(Icons.calendar_month, color: Color(0xFFD32F2F)),
                     SizedBox(width: 8),
-                    Text("02 Şubat 2026", style: TextStyle(color: Colors.white70, fontSize: 16)),
-                    SizedBox(width: 20),
+                    Text(event.date, style: TextStyle(color: Colors.white70, fontSize: 16)),
+                    SizedBox(width: 25),
                     Icon(Icons.location_on, color: Color(0xFFD32F2F)),
-                    SizedBox(width: 20),
-                    Text("Jolly Joker, Bursa", style: TextStyle(color: Colors.white70, fontSize: 16)),
+                    SizedBox(width: 8),
+                    Text(event.locationName, style: TextStyle(color: Colors.white70, fontSize: 16)),
                   ],
                 ),
 
@@ -78,10 +82,8 @@ class DetailView extends StatelessWidget {
                 const SizedBox(height: 20),
 
                 //açıklama
-                const Text(
-                  "Metal müziğin önde gelen organizasyonu %100 Metal'den yeni etkinlik! "
-                  "Mighty Metal klasik ve power metal tutkunları için ilk kez Bursa'da.\n"
-                  "Bu unutulmaz gece için hemen yerini ayır!",
+                Text(
+                  event.description,
                   style: TextStyle(color: Colors.grey, fontSize: 14, height: 1.5),
                 ),
 
@@ -98,7 +100,7 @@ class DetailView extends StatelessWidget {
                       backgroundColor: const Color(0xFFD32F2F),
                       foregroundColor: Colors.white,
                     ),
-                    child: const Text("BİLET AL - 1500 ₺", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                    child: Text("BİLET AL - ${event.price} ₺", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                   ),
                 ),
               ],

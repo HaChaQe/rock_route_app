@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../widgets/event_card.dart';
+import '../../models/event_model.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
@@ -16,17 +17,13 @@ class HomeView extends StatelessWidget {
           )
         ],
       ),
-      body: ListView(
+      body: ListView.builder(
         padding: const EdgeInsets.all(16),
-        children: const [
-          EventCard(),
-          EventCard(),
-          EventCard(),
-          EventCard(),
-          EventCard(),
-          EventCard(),
-          SizedBox(height: 50)
-        ],
+        itemCount: dummyEvents.length,
+        itemBuilder: (context, index){
+          final currentEvent = dummyEvents[index]; //0dan başla verileri al
+          return EventCard(event: currentEvent);
+        },
       ),
     );
   }
