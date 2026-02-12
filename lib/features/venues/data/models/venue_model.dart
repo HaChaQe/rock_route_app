@@ -1,0 +1,36 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'venue_model.g.dart';
+
+@JsonSerializable()
+class VenueModel {
+  final String id;
+  final String name;
+  final String description;
+  final String imageUrl;
+  final double latitude;
+  final double longitude;
+  final double rating;
+  final String category;
+
+  @JsonKey(defaultValue: false)
+  final bool isFavorite;
+
+  VenueModel({
+    required this.id,
+    required this.name,
+    required this.description,
+    required this.imageUrl,
+    required this.latitude,
+    required this.longitude,
+    required this.rating,
+    required this.category,
+    this.isFavorite = false,
+  });
+
+  factory VenueModel.fromJson(Map<String, dynamic> json) => _$VenueModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$VenueModelToJson(this);
+}
+
+

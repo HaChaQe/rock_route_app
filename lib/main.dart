@@ -1,30 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'core/constants/app_constants.dart';
+import 'features/venues/presentation/pages/home_page.dart';
 
-import 'core/app_router.dart';
-
-void main(){
-  runApp(const ProviderScope(child: RockRouteApp()));
+void main() {
+  runApp(
+    const ProviderScope(child: RockRouteApp())
+  );
 }
 
 class RockRouteApp extends StatelessWidget {
   const RockRouteApp({super.key});
 
   @override
-  Widget build(BuildContext context){
-    return MaterialApp.router(
-      title: 'Rock Route',
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: AppConstants.appName,
       debugShowCheckedModeBanner: false,
-      theme: ThemeData.dark(useMaterial3: true).copyWith(
-        scaffoldBackgroundColor: Colors.black,
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.black,
-          centerTitle: true,
-        ),
+      theme: ThemeData(
+        brightness: Brightness.dark,
+        scaffoldBackgroundColor: AppConstants.backgroundColor,
+        useMaterial3: true
       ),
-
-      routerConfig: appRouter,
+      home: const HomePage(),
     );
   }
-
 }
