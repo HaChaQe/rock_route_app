@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rock_route/features/venues/presentation/pages/map_page.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../providers/venue_provider.dart';
 import '../widgets/venue_card.dart';
@@ -9,7 +10,7 @@ class HomePage extends ConsumerWidget{
 
   @override
   Widget build(BuildContext context, WidgetRef ref){
-    final venueState = ref.watch(VenueProvider);
+    final venueState = ref.watch(venueProvider);
 
     return Scaffold(
       backgroundColor: AppConstants.backgroundColor,
@@ -40,6 +41,18 @@ class HomePage extends ConsumerWidget{
             style: const TextStyle(color: AppConstants.errorColor),
           ),
         ),
+      ),
+
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: (){
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const MapPage()),
+          );
+        },
+        label: const  Text("Harita"),
+        icon: const Icon(Icons.map),
+        backgroundColor: AppConstants.primaryColor,
       ),
     );
   }
