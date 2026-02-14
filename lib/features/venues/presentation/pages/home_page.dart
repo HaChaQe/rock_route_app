@@ -4,6 +4,7 @@ import 'package:rock_route/features/venues/presentation/pages/map_page.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../providers/venue_provider.dart';
 import '../widgets/venue_card.dart';
+import 'package:rock_route/features/venues/presentation/widgets/venue_detail_sheet.dart';
 
 class HomePage extends ConsumerWidget{
   const HomePage ({super.key});
