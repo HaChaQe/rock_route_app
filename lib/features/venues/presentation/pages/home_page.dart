@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rock_route/features/venues/presentation/pages/map_page.dart';
+// import 'package:rock_route/features/venues/presentation/pages/map_page.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../providers/venue_provider.dart';
 import '../widgets/venue_card.dart';
-import 'package:rock_route/features/venues/presentation/widgets/venue_detail_sheet.dart';
+// import 'package:rock_route/features/venues/presentation/pages/favorites_page.dart';
+// import 'package:rock_route/features/venues/presentation/widgets/venue_detail_sheet.dart';
 
 class HomePage extends ConsumerWidget{
   const HomePage ({super.key});
@@ -27,7 +28,12 @@ class HomePage extends ConsumerWidget{
       
       body: venueState.when(
         data: (venues) => Padding(
-          padding: const EdgeInsets.all(AppConstants.defaultPadding),
+          padding: const EdgeInsets.only(
+            left: AppConstants.defaultPadding,
+            right: AppConstants.defaultPadding,
+            top: AppConstants.defaultPadding,
+            bottom: 3,
+          ),
           child: ListView.builder(
             itemCount: venues.length,
             itemBuilder: (context, index) => VenueCard(venue: venues[index])
@@ -42,18 +48,6 @@ class HomePage extends ConsumerWidget{
             style: const TextStyle(color: AppConstants.errorColor),
           ),
         ),
-      ),
-
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: (){
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const MapPage()),
-          );
-        },
-        label: const  Text("Harita"),
-        icon: const Icon(Icons.map),
-        backgroundColor: AppConstants.primaryColor,
       ),
     );
   }

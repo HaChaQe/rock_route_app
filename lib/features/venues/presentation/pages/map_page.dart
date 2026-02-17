@@ -6,7 +6,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:rock_route/features/venues/presentation/providers/venue_provider.dart';
 // import 'package:url_launcher/url_launcher.dart';
 import 'package:rock_route/features/venues/presentation/widgets/venue_detail_sheet.dart';
-
+import '../providers/location_provider.dart';
 
 class MapPage extends ConsumerStatefulWidget {
   const MapPage({super.key});
@@ -26,9 +26,10 @@ class _MapPageState extends ConsumerState<MapPage> {
   Widget build(BuildContext context) {
 
     final venueState = ref.watch(venueProvider);
+    final locationState = ref.watch(currentLocationProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text("RockRoute Harita"),),
+      appBar: AppBar(title: const Text("RockRoute Harita",style: TextStyle(fontWeight: FontWeight.bold),),),
       body: venueState.when(
         error: (err, stack) => Center(child: Text("Hata $err"),),
         loading: () => const Center(child: CircularProgressIndicator()),
@@ -43,9 +44,21 @@ class _MapPageState extends ConsumerState<MapPage> {
               },
             );
           }).toSet(); // List to Set
+
+          CameraPosition initialCamera = _mersinCenter;
+
+          locationState.whenData((position){
+            if (position != null) {
+              initialCamera = CameraPosition(
+                target: LatLng(position.latitude, position.longitude),
+                zoom: 14.0
+              );
+            }
+          });
+
           return GoogleMap(
             mapType: MapType.normal,
-            initialCameraPosition: _mersinCenter,
+            initialCameraPosition: initialCamera,
             markers: markers,
             myLocationButtonEnabled: true,
             myLocationEnabled: true,
