@@ -5,11 +5,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'core/constants/app_constants.dart';
 // import 'features/venues/presentation/pages/home_page.dart';
 import 'features/venues/presentation/providers/favorites_provider.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized(); //flutter konusmaya hazır mı?
   final prefs = await SharedPreferences.getInstance();
+
+  await dotenv.load(fileName: ".env");
 
   runApp(
     ProviderScope(
