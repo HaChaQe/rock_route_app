@@ -32,5 +32,3 @@ class VenueModel {
 
   Map<String, dynamic> toJson() => _$VenueModelToJson(this);
 }
-
-

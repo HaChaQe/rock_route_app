@@ -3,15 +3,16 @@ import '../../data/models/venue_model.dart';
 import '../../data/repositories/venue_repository.dart';
 import '../../../../core/services/google_places_service.dart';
 
-
+// Google servisimizi Provider'a ekliyoruz
 final googlePlacesServiceProvider = Provider<GooglePlacesService>((ref){
   return GooglePlacesService();
 });
 
-final venueRepositoryProvider = Provider<VenueRepository>((ref){
-  final googleService = ref.read(googlePlacesServiceProvider);
-  return VenueRepository(googlePlacesService: googleService);
-});
+// Repository'e Google servisini veriyoruz
+final venueRepositoryProvider = Provider<VenueRepository>((ref) {
+  final placesService = ref.read(googlePlacesServiceProvider);
+  return VenueRepository(placesService: placesService);
+}); 
 
 final venueProvider = AsyncNotifierProvider<VenueNotifier, List<VenueModel>>((){
   return VenueNotifier();
@@ -24,6 +25,11 @@ class VenueNotifier extends AsyncNotifier<List<VenueModel>> {
     final repository = ref.read(venueRepositoryProvider);
     const double testlat = 36.7845;
     const double testlng = 34.5912;
+
+    // //Kadıköy
+    // const double testlat = 40.9900;
+    // const double testlng = 29.0200;
+
     return repository.getVenues(testlat, testlng);
   }
 }

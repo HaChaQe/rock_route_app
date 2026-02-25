@@ -1,6 +1,5 @@
-// :
-import 'package:rock_route/core/services/google_places_service.dart';
 import '../models/venue_model.dart';
+import '../../../../core/services/google_places_service.dart';
 
 // class VenueRepository {
 //   Future<List<VenueModel>> getVenues() async{
@@ -61,11 +60,21 @@ import '../models/venue_model.dart';
 // }
 
 class VenueRepository {
-  final GooglePlacesService _googlePlacesService;
-  VenueRepository({required GooglePlacesService googlePlacesService})
-      :_googlePlacesService = googlePlacesService;
+  final GooglePlacesService _placesService;
+
+  VenueRepository({required GooglePlacesService placesService})
+      : _placesService = placesService;
 
   Future<List<VenueModel>> getVenues(double lat, double lng) async {
-    return await _googlePlacesService.getNearbyVenues(lat, lng);
+    try {
+      // Bütün ağır yükü (JSON parsing, fotoğraf linki, kategori vs.) 
+      // zaten GooglePlacesService içindeki 'getNearbyVenues' yapıyor.
+      // Biz sadece o tertemiz listeyi alıp Provider'a iletiyoruz!
+      return await _placesService.getNearbyVenues(lat, lng);
+      
+    } catch (e) {
+      print("REPOSITORY HATASI: $e");
+      return []; // Hata olursa uygulamayı çökertmemek için boş liste dönüyoruz
+    }
   }
 }

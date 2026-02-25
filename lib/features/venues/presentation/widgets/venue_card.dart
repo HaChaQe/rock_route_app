@@ -64,11 +64,12 @@ class VenueCard extends ConsumerWidget {
                 children: [
                   ClipRRect(
                     borderRadius: const BorderRadiusGeometry.vertical(top: Radius.circular(AppConstants.borderRadius)),
-                    child: Image.asset(
+                    child: Image.network(
                       venue.imageUrl,
                       height: 150,
                       width: double.infinity,
                       fit: BoxFit.cover,
+                      // errorBuilder kısmın tamamen aynı kalabilir, o kısım harika!
                       errorBuilder: (context, error, stackTrace) => Container(
                         height: 150,
                         color: Colors.grey[800],

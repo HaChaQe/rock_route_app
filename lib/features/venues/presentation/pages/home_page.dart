@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-// import 'package:rock_route/features/venues/presentation/pages/map_page.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../providers/venue_provider.dart';
 import '../widgets/venue_card.dart';
-// import 'package:rock_route/features/venues/presentation/pages/favorites_page.dart';
-// import 'package:rock_route/features/venues/presentation/widgets/venue_detail_sheet.dart';
+import '../widgets/venue_shimmer_list.dart';
+
 
 final List<String> _categories = ["Tümü", "Rock Bar", "Pub", "Canlı Müzik", "Metal"];
 
@@ -87,9 +86,7 @@ class HomePage extends ConsumerWidget{
                   ),
                 );
               },
-              loading: () => const Center(
-                child: CircularProgressIndicator(color: AppConstants.primaryColor),
-              ),
+              loading: () => const VenueShimmerList(),
               error: (error, stackTrace) => Center(
                 child: Text(
                   "Tabancanın ucu kopti: $error",

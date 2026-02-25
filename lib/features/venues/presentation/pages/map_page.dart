@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-// import 'package:rock_route/core/constants/app_constants.dart';
-// import 'package:rock_route/features/venues/data/models/venue_model.dart';
+
 import 'package:rock_route/features/venues/presentation/providers/venue_provider.dart';
-// import 'package:url_launcher/url_launcher.dart';
+import 'package:rock_route/features/venues/presentation/providers/location_provider.dart';
 import 'package:rock_route/features/venues/presentation/widgets/venue_detail_sheet.dart';
-import '../providers/location_provider.dart';
 
 class MapPage extends ConsumerStatefulWidget {
   const MapPage({super.key});
@@ -24,7 +22,7 @@ class _MapPageState extends ConsumerState<MapPage> {
 
   @override
   Widget build(BuildContext context) {
-
+    // Veri artık Overpass'tan geliyor ama Google Map UI'ında çizilecek!
     final venueState = ref.watch(venueProvider);
     final locationState = ref.watch(currentLocationProvider);
 
@@ -43,7 +41,7 @@ class _MapPageState extends ConsumerState<MapPage> {
                 showVenueDetailSheet(context, venue);
               },
             );
-          }).toSet(); // List to Set
+          }).toSet(); 
 
           CameraPosition initialCamera = _mersinCenter;
 

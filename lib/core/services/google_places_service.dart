@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-// Senin modelinin yolunu kendi klasörüne göre düzeltmeyi unutma!
 import '../../features/venues/data/models/venue_model.dart'; 
 
 class GooglePlacesService {
@@ -21,8 +20,8 @@ class GooglePlacesService {
         queryParameters: {
           'location': '$lat,$lng', // Enlem ve Boylam
           'radius': 5000, // 5 Kilometre yarıçapında ara
-          'type': 'bar', // Sadece barları getir
-          'keyword': 'rock bar pub', // ✨ Senin tarzına özel arama kelimesi!
+          // 'type': 'bar', // Sadece barları getir
+          'keyword': '(rock OR metal OR canlı müzik OR sahne OR pub OR concert) AND rock bar pub',
           'key': apiKey, // Kasadan çıkan şifre
         },
       );
@@ -33,16 +32,7 @@ class GooglePlacesService {
       final List results = response.data['results'] ?? [];
       
       return results.map((json) {
-        
-        // 📸 Google'dan Fotoğraf Çekmek (Foursquare'den daha farklıdır)
-        // String imageUrl = 'https://via.placeholder.com/400x300?text=Fotoğraf+Yok';
-        // if (json['photos'] != null && (json['photos'] as List).isNotEmpty) {
-        //   final photoRef = json['photos'][0]['photo_reference'];
-        //   // Google resimleri doğrudan bir URL parametresiyle verir
-        //   imageUrl = 'https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=$photoRef&key=$apiKey';
-        // }
-        // 📸 Google Fotoğraf URL'sini Jilet Gibi Yapalım
-        // 📸 Google Fotoğraf URL'sini Jilet Gibi Yapalım
+
         String imageUrl = 'https://via.placeholder.com/400x300?text=Resim+Yok';
 
         if (json['photos'] != null && (json['photos'] as List).isNotEmpty) {
@@ -54,7 +44,7 @@ class GooglePlacesService {
           const String photoBaseUrl = 'https://maps.googleapis.com/maps/api/place/photo';
           const int maxWidth = 400;
           
-          imageUrl = '$photoBaseUrl?maxwidth=$maxWidth&photo_reference=$photoRef&key=$apiKey';
+          imageUrl = '$photoBaseUrl?maxwidth=$maxWidth&photoreference=$photoRef&key=$apiKey';
           
           // 🕵️‍♂️ AJAN KOD: Konsola tıkla bak bakalım URL doğru mu?
           print('🖼️ FOTO URL: $imageUrl');
@@ -64,14 +54,30 @@ class GooglePlacesService {
         double rating = (json['rating'] ?? 0.0).toDouble();
 
         // 🏷️ Kategoriyi dinamik yapalım
-        String rawCategory = (json['types'] as List).isNotEmpty 
-            ? json['types'][0].toString().replaceAll('_', ' ').toUpperCase() 
-            : 'ROCK VENUE';
+        String venueNameUpper = (json['name'] ?? '').toString().toUpperCase();
+        String rawTypes = (json['types'] as List).join(' ').toUpperCase();
 
-        // Eğer senin "Modern Rock" tarzına sadık kalsın istiyorsan:
-        String displayCategory = rawCategory.contains('BAR') ? 'MODERN ROCK BAR' : rawCategory;
+        String displayCategory = "Pub";
 
-
+        if (venueNameUpper.contains('METAL')) {
+          displayCategory = "Metal";
+        } 
+        // İsmi direkt Rock Bar olanlar
+        else if (venueNameUpper.contains('ROCK')) {
+          displayCategory = "Rock Bar";
+        } 
+        // Canlı Müzik / Sahne konsepti olanlar (İsminde sahne/performans geçenler veya gece kulübü ruhsatlı barlar genelde sahneli olur)
+        else if (venueNameUpper.contains('SAHNE') || venueNameUpper.contains('PERFORMANS') || venueNameUpper.contains('CANLI') || rawTypes.contains('NIGHT_CLUB')) {
+          displayCategory = "Canlı Müzik";
+        } 
+        // Klasik Pub ve Barlar
+        else if (venueNameUpper.contains('PUB') || rawTypes.contains('BAR')) {
+          displayCategory = "Pub";
+        } 
+        // Yukarıdakilerin hiçbirine uymayanları genel konsepte dahil edelim
+        else {
+          displayCategory = "Rock Bar"; 
+        }
 
         return VenueModel(
           id: json['place_id'] ?? '',
