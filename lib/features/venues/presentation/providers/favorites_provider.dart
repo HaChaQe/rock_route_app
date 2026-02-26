@@ -1,35 +1,43 @@
+import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rock_route/features/venues/data/models/venue_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-final sharedPreferencesProvider = Provider<SharedPreferences>((ref){
-  throw UnimplementedError();
+final favoritesProvider = StateNotifierProvider<FavoritesNotifier, List<VenueModel>>((ref){
+  return FavoritesNotifier();
 });
 
-class FavoritesNotifier extends StateNotifier<List<String>> {
-  final SharedPreferences prefs;
-  static const _key = 'favorite_venue_ids';
-
-  FavoritesNotifier(this.prefs) : super([]){
+class FavoritesNotifier extends StateNotifier<List<VenueModel>>{
+  FavoritesNotifier() : super([]) {
     _loadFavorites();
   }
-  
-  void _loadFavorites() {
-    final saved = prefs.getStringList(_key) ?? [];
-    state = saved;
+
+  static const _storageKey = 'rock_route_full_favorites';
+
+  Future<void> _loadFavorites() async {
+    final prefs = await SharedPreferences.getInstance();
+    final jsonList = prefs.getStringList(_storageKey) ?? [];
+
+    final venues = jsonList.map((jsonStr) => VenueModel.fromJson(jsonDecode(jsonStr))).toList();
+    state = venues;
   }
 
-  void toggleFavorite(String venueId){ // Ekle - Çıkar
-    if (state.contains(venueId)) { // zaten varsa çıkar
-      state = state.where((id) => id != venueId).toList();
-    }else {
-      state = [...state, venueId];//yoksa ekle
+  Future<void> toggleFvorite(VenueModel venue) async {
+    final prefs = await SharedPreferences.getInstance();
+    final isFavorite = state.any((v) => v.id == venue.id);
+
+    if (isFavorite) {
+      state = state.where((v) => v.id != venue.id).toList();
+    }else{
+      state = [...state, venue];
     }
 
-    prefs.setStringList(_key, state); //kaydet
+    final jsonList = state.map((v) => jsonEncode(v.toJson())).toList();
+    await prefs.setStringList(_storageKey, jsonList);
   }
-}
 
-final favoritesProvider = StateNotifierProvider<FavoritesNotifier, List<String>>((ref) {
-  final prefs = ref.watch(sharedPreferencesProvider);
-  return FavoritesNotifier(prefs);
-});
+  bool isFavorite(String venueId) {
+    return state.any((v) => v.id == venueId);
+  }
+
+}

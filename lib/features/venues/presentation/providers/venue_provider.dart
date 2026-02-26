@@ -23,12 +23,17 @@ class VenueNotifier extends AsyncNotifier<List<VenueModel>> {
   @override
   Future<List<VenueModel>> build() async {
     final repository = ref.read(venueRepositoryProvider);
+    //Mersin
     const double testlat = 36.7845;
     const double testlng = 34.5912;
 
-    // //Kadıköy
+    // Kadıköy
     // const double testlat = 40.9900;
     // const double testlng = 29.0200;
+
+    // LA Sunset Strip
+    // const double testlat = 34.0905;
+    // const double testlng = -118.3844;
 
     return repository.getVenues(testlat, testlng);
   }

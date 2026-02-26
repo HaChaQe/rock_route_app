@@ -16,8 +16,8 @@ class VenueCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     
     final locationAsync = ref.watch(currentLocationProvider);
-    final favoriteIds = ref.watch(favoritesProvider);
-    final isFavorite = favoriteIds.contains(venue.id); // mekan favlarda var mı?
+    final favoriteVenues = ref.watch(favoritesProvider);
+    final isFavorite = favoriteVenues.any((v) => v.id == venue.id); // mekan favlarda var mı?
     
     String distanceText = '';
 
@@ -90,7 +90,7 @@ class VenueCard extends ConsumerWidget {
                             size: 20,
                           ),
                           onPressed: () {
-                            ref.read(favoritesProvider.notifier).toggleFavorite(venue.id);
+                            ref.read(favoritesProvider.notifier).toggleFavorite(venue);
                           },
                         ),
                       ),
