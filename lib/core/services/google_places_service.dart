@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../../features/venues/data/models/venue_model.dart'; 
@@ -13,7 +15,7 @@ class GooglePlacesService {
   Future<List<VenueModel>> getNearbyVenues(double lat, double lng) async {
     try {
       // 🔐 Şifreyi güvenlik kasasından (Dart dünyasından) çekiyoruz!
-      final String apiKey = dotenv.env['MAPS_API_KEY'] ?? '';
+      final String apiKey = dotenv.env['GOOGLE_API_KEY'] ?? '';
       print('🔑 Kasadan Çıkan Anahtar: $apiKey');
       final response = await _dio.get(
         _baseUrl,
@@ -38,7 +40,7 @@ class GooglePlacesService {
         if (json['photos'] != null && (json['photos'] as List).isNotEmpty) {
           // 1. Buradaki ismin 'photo_reference' olduğundan emin ol (alt tire önemli)
           final String photoRef = json['photos'][0]['photo_reference'];
-          final String apiKey = dotenv.env['MAPS_API_KEY'] ?? ''; 
+          final String apiKey = dotenv.env['GOOGLE_API_KEY'] ?? ''; 
           
           // 2. URL'yi parçalara bölelim ki hata payı kalmasın
           const String photoBaseUrl = 'https://maps.googleapis.com/maps/api/place/photo';

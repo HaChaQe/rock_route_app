@@ -17,12 +17,11 @@ class FavoritesNotifier extends StateNotifier<List<VenueModel>>{
   Future<void> _loadFavorites() async {
     final prefs = await SharedPreferences.getInstance();
     final jsonList = prefs.getStringList(_storageKey) ?? [];
-
     final venues = jsonList.map((jsonStr) => VenueModel.fromJson(jsonDecode(jsonStr))).toList();
     state = venues;
   }
 
-  Future<void> toggleFvorite(VenueModel venue) async {
+  Future<void> toggleFavorite(VenueModel venue) async {
     final prefs = await SharedPreferences.getInstance();
     final isFavorite = state.any((v) => v.id == venue.id);
 

@@ -73,6 +73,7 @@ class VenueRepository {
       return await _placesService.getNearbyVenues(lat, lng);
       
     } catch (e) {
+      // ignore: avoid_print
       print("REPOSITORY HATASI: $e");
       return []; // Hata olursa uygulamayı çökertmemek için boş liste dönüyoruz
     }

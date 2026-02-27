@@ -15,8 +15,8 @@ void showVenueDetailSheet(BuildContext context, VenueModel venue) {
       builder: (context) {
         return Consumer(
           builder: (context, ref, child) {
-            final favoriteIds = ref.watch(favoritesProvider);
-            final isFavorite = favoriteIds.contains(venue.id); // mekan favlarda var mı?
+            final favoriteVenues = ref.watch(favoritesProvider);
+            final isFavorite = favoriteVenues.any((v) => v.id == venue.id); // mekan favlarda var mı?
 
             final locationAsync = ref.watch(currentLocationProvider);
             String distanceText = '';
@@ -153,7 +153,7 @@ void showVenueDetailSheet(BuildContext context, VenueModel venue) {
                                       size: 26,
                                     ),
                                     onPressed: (){
-                                      ref.read(favoritesProvider.notifier).toggleFavorite(venue.id);
+                                      ref.read(favoritesProvider.notifier).toggleFavorite(venue);
                                     } 
                                   ),
                                 ],

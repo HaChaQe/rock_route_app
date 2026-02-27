@@ -1,30 +1,25 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rock_route/features/venues/presentation/pages/main_page.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'core/constants/app_constants.dart';
-import 'features/venues/presentation/providers/favorites_provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized(); //flutter konusmaya hazır mı?
-  final prefs = await SharedPreferences.getInstance();
 
   try {
     await dotenv.load(fileName: ".env");
-    print("ENV YÜKLENDİ! ŞİFRE: ${dotenv.env['GOOGLE_PLACES_API_KEY']}");
+    print("ENV YÜKLENDİ! ŞİFRE: ${dotenv.env['GOOGLE_API_KEY']}");
   } catch (e) {
     print("ENV DOSYASI BULUNAMADI! HATA: $e");
   }
 
   runApp(
-    ProviderScope(
-      // Yüklediğimiz hafızayı Riverpod'un içine enjekte ediyoruz
-      overrides: [
-        sharedPreferencesProvider.overrideWithValue(prefs),
-      ],
-      child: const RockRouteApp(),
+    const ProviderScope(
+      child: RockRouteApp(),
     ),
   );
 }

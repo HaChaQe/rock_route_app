@@ -35,7 +35,7 @@ class VenueShimmerList extends StatelessWidget {
                 Container(
                   height: 150,
                   width: double.infinity,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     color: Colors.white, // Shimmer'ın parlaması için beyaz verilir
                     borderRadius: BorderRadius.vertical(
                       top: Radius.circular(AppConstants.borderRadius),
