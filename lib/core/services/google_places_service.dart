@@ -21,7 +21,7 @@ class GooglePlacesService {
         _baseUrl,
         queryParameters: {
           'location': '$lat,$lng', // Enlem ve Boylam
-          'radius': 5000, // 5 Kilometre yarıçapında ara
+          'rankby': 'distance', // 5 Kilometre yarıçapında ara
           // 'type': 'bar', // Sadece barları getir
           'keyword': '(rock OR metal OR canlı müzik OR sahne OR pub OR concert) AND rock bar pub',
           'key': apiKey, // Kasadan çıkan şifre

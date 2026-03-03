@@ -21,15 +21,36 @@ class TicketmasterService {
         'unit': 'km',
         'classificationName': 'Rock,Metal', 
         'sort': 'date,asc', // En yakın tarihliden en uzağa doğru sırala
+        'size': '30',
       });
 
       // 3. Ticketmaster'ın iç içe geçmiş (nested) JSON'unu ayıklama operasyonu
-      // Ticketmaster verileri her zaman "_embedded" adlı bir paketin içinde yollar.
       if (response.data['_embedded'] != null && response.data['_embedded']['events'] != null) {
         final List eventsJson = response.data['_embedded']['events'];
 
+        // 🤘 SENIOR DOKUNUŞU: Kesin Tür Kontrolü (Strict Genre Whitelisting)
+        final filteredEvents = eventsJson.where((json) {
+          bool isRockOrMetal = false;
+
+          // Ticketmaster'ın 'classifications' (sınıflandırma) düğümünün içine giriyoruz
+          if (json['classifications'] != null && json['classifications'].isNotEmpty) {
+            final genre = (json['classifications'][0]['genre']?['name'] ?? '').toString().toLowerCase();
+            final subGenre = (json['classifications'][0]['subGenre']?['name'] ?? '').toString().toLowerCase();
+
+            // Eğer etkinliğin ana türü VEYA alt türü Rock/Metal içeriyorsa "True" yap
+            if (genre.contains('rock') || genre.contains('metal') || 
+                subGenre.contains('rock') || subGenre.contains('metal') ||
+                genre.contains('alternative') || genre.contains('punk')) { // İstersen alternative/punk da ekleyebilirsin
+              isRockOrMetal = true;
+            }
+          }
+
+          // Eğer türü Rock/Metal değilse (Örn: Pop, Arabesk, Tiyatro ise) anında listeden at (false dön)
+          return isRockOrMetal;
+        }).toList();
+
         // 4. Gelen karmaşık listeyi bizim temiz EventModel listesine çeviriyoruz (Mapping)
-        return eventsJson.map((json) {
+        return filteredEvents.map((json) {
           
           // Afiş url'sini güvenle çıkar (Yoksa boş dönsün)
           String imageUrl = '';
