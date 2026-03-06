@@ -12,14 +12,14 @@ void main() async{
 
   try {
     await dotenv.load(fileName: ".env");
-    print("ENV YÜKLENDİ! ŞİFRE: ${dotenv.env['GOOGLE_API_KEY']}");
+    print("ENV YÜKLENDİ!");
   } catch (e) {
     print("ENV DOSYASI BULUNAMADI! HATA: $e");
   }
 
   runApp(
     const ProviderScope(
-      child: RockRouteApp(),
+      child: RockRouteApp()
     ),
   );
 }
