@@ -10,8 +10,10 @@ class EventModel{
   final String imageUrl;
   final String date;
   final String venueName;
+  final double? latitude;
+  final double? longitude;
 
-  EventModel({required this.id, required this.name, required this.ticketUrl, required this.imageUrl, required this.date, required this.venueName});
+  EventModel({required this.id, required this.name, required this.ticketUrl, required this.imageUrl, required this.date, required this.venueName, required this.latitude, required this.longitude});
 
   factory EventModel.fromJson(Map<String, dynamic> json) => _$EventModelFromJson(json);
 

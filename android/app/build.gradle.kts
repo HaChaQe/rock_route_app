@@ -4,17 +4,17 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
-// YENİ EKLENEN KISIM (BAŞI)
+// 🤘 SENIOR DOKUNUŞU: .env dosyasını okuyan Kotlin scripti
 import java.util.Properties
 
-val localProperties = Properties()
-val localPropertiesFile = rootProject.file("local.properties")
-if (localPropertiesFile.exists()) {
-    localPropertiesFile.inputStream().use { stream ->
-        localProperties.load(stream)
+val envProperties = Properties()
+// Flutter'ın ana dizinindeki .env dosyasını buluyoruz
+val envFile = rootProject.file("../.env")
+if (envFile.exists()) {
+    envFile.inputStream().use { stream ->
+        envProperties.load(stream)
     }
 }
-// YENİ EKLENEN KISIM (SONU)
 
 android {
     namespace = "com.chaash.rockroute.rock_route"
@@ -37,8 +37,8 @@ android {
         versionCode = flutter.versionCode
         versionName = flutter.versionName
 
-        // YENİ EKLENEN KISIM
-        val mapsApiKey = localProperties.getProperty("MAPS_API_KEY") ?: ""
+        // 🤘 ŞİFREYİ .ENV'DEN ÇEKİP ANDROID'E ŞIRINGA EDİYORUZ
+        val mapsApiKey = envProperties.getProperty("GOOGLE_API_KEY") ?: ""
         manifestPlaceholders["mapsApiKey"] = mapsApiKey
     }
 

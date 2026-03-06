@@ -138,10 +138,10 @@ class HomePage extends ConsumerWidget {
         ),
         backgroundColor: Colors.transparent,
         elevation: 0,
-        centerTitle: true,
+        centerTitle: false,
         actions: [
           IconButton(
-            icon: const Icon(Icons.search, color: AppConstants.primaryColor, size: 28),
+            icon: const Icon(Icons.explore, color: AppConstants.primaryColor, size: 28),
             onPressed: () => _showCitySearchDialog(context, ref),
             tooltip: "Şehir Ara",
           ),
@@ -253,9 +253,9 @@ class HomePage extends ConsumerWidget {
             style: const TextStyle(color: AppConstants.textPrimary),
             decoration: const InputDecoration(
               hintText: "Örn: Bursa, Kadıköy...",
-              hintStyle: const TextStyle(color: AppConstants.textSecondary),
-              enabledBorder: const UnderlineInputBorder(borderSide: BorderSide(color: AppConstants.primaryColor)),
-              focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: AppConstants.primaryColor)),
+              hintStyle: TextStyle(color: AppConstants.textSecondary),
+              enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppConstants.primaryColor)),
+              focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppConstants.primaryColor)),
             ),
           ),
           actions: [

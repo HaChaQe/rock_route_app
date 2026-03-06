@@ -30,12 +30,16 @@ class RockRouteApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: AppConstants.appName,
+      title: AppConstants.appName, // İşletim sistemi için isim
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         brightness: Brightness.dark,
         scaffoldBackgroundColor: AppConstants.backgroundColor,
-        useMaterial3: true
+        useMaterial3: true,
+        // 🤘 İŞTE SENIOR DOKUNUŞU: Tüm AppBar'lara "Başlığı Sola Yasla!" emrini veriyoruz
+        appBarTheme: const AppBarTheme(
+          centerTitle: false, // true yaparsan ortaya, false yaparsan sola yaslar
+        ),
       ),
       home: const MainPage(),
     );

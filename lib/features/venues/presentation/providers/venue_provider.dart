@@ -4,6 +4,7 @@ import '../../data/repositories/venue_repository.dart';
 import '../../../../core/services/google_places_service.dart';
 import 'city_search_provider.dart';
 import 'package:geolocator/geolocator.dart';
+import 'location_provider.dart';
 
 // Google servisimizi Provider'a ekliyoruz
 final googlePlacesServiceProvider = Provider<GooglePlacesService>((ref){
@@ -20,39 +21,45 @@ final venueProvider = AsyncNotifierProvider<VenueNotifier, List<VenueModel>>((){
   return VenueNotifier();
 });
 
-class VenueNotifier extends AsyncNotifier<List<VenueModel>> {
+// location_provider'ını import etmeyi unutma!
 
+class VenueNotifier extends AsyncNotifier<List<VenueModel>> {
   @override
   Future<List<VenueModel>> build() async {
     final repository = ref.read(venueRepositoryProvider);
     final selectedCity = ref.watch(selectedCityProvider);
+    
+    // 🤘 1. GERÇEK GPS'İ DİNLİYORUZ!
+    final locationAsync = ref.watch(currentLocationProvider); 
 
     double lat;
     double lng;
 
     if (selectedCity != null) {
+      // Arama yapıldıysa o şehri kullan
       lat = selectedCity.latitude;
       lng = selectedCity.longitude;
     } else {
-      // Varsayılan Konum (Mersin)
-      lat = 36.7845;
-      lng = 34.5912;
+      // ARAMA YOKSA SABİT KOORDİNAT YERİNE GERÇEK GPS'İ KULLAN!
+      final currentPosition = locationAsync.value;
+      if (currentPosition != null) {
+        lat = currentPosition.latitude;
+        lng = currentPosition.longitude;
+      } else {
+        return []; // GPS henüz gelmediyse boş liste dön (veya loading göster)
+      }
     }
 
-    // 1. API'den mekanları çekiyoruz (Burada hala Google'ın karışık sırasında geliyorlar)
+    // 2. Veriyi çek
     final venues = await repository.getVenues(lat, lng);
 
-    // 🤘 2. SENIOR DOKUNUŞU: Listeyi havada yakalayıp merkeze olan uzaklığa göre diziyoruz!
+    // 3. Mesafe sıralamasını (artık gerçek GPS'e veya Aranan Şehre göre) yap!
     venues.sort((a, b) {
-      // Not: Kendi VenueModel'indeki değişken adlarına göre 'a.lat' veya 'a.latitude' olarak düzeltmeyi unutma!
       final distanceA = Geolocator.distanceBetween(lat, lng, a.latitude, a.longitude);
       final distanceB = Geolocator.distanceBetween(lat, lng, b.latitude, b.longitude);
-      
-      // Yakından (küçük mesafe) uzağa (büyük mesafe) doğru sırala
       return distanceA.compareTo(distanceB); 
     });
 
-    // 3. Jilet gibi sıralanmış listeyi arayüze gönder!
     return venues;
   }
 }

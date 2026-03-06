@@ -187,7 +187,7 @@ void showVenueDetailSheet(BuildContext context, VenueModel venue) {
                             child: ElevatedButton.icon(
                               onPressed: () {
                                 Navigator.pop(context); // Sheet'i kapat
-                                _launchMapsUrl(venue.latitude, venue.longitude); // Haritayı aç
+                                _launchMapsUrl(venue.latitude, venue.longitude, venue.name); // Haritayı aç
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: AppConstants.primaryColor,
@@ -196,7 +196,7 @@ void showVenueDetailSheet(BuildContext context, VenueModel venue) {
                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                               ),
                               icon: const Icon(Icons.map_outlined),
-                              label: const Text("Haritada Göster", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                              label: const Text("Haritada Gör", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                             ),
                           ),
                         ),
@@ -213,13 +213,27 @@ void showVenueDetailSheet(BuildContext context, VenueModel venue) {
     );
   }
 
-  Future<void> _launchMapsUrl(double lat, double lon) async {
-    final uri = Uri.parse("https://www.google.com/maps/search/?api=1&query=$lat,$lon");
+  // Future<void> _launchMapsUrl(double lat, double lon) async {
+  //   final uri = Uri.parse("https://www.google.com/maps/search/?api=1&query=$lat,$lon");
 
-    try {
-      if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
-        throw Exception("Haritayı açamiyik: $uri");}
-    } on Exception catch (e) {
-      debugPrint("Hata: $e");
+  //   try {
+  //     if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+  //       throw Exception("Haritayı açamiyik: $uri");}
+  //   } on Exception catch (e) {
+  //     debugPrint("Hata: $e");
+  //   }
+  // }
+
+Future<void> _launchMapsUrl(double lat, double lon, String name) async {
+  final encodedName = Uri.encodeComponent(name);
+  final uri = Uri.parse(
+    "https://www.google.com/maps/search/?api=1&query=$encodedName+$lat,$lon"
+  );
+  try {
+    if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+      throw Exception("Haritayı açamadık: $uri");
     }
+  } on Exception catch (e) {
+    debugPrint("Hata: $e");
   }
+}
