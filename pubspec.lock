@@ -400,6 +400,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.3.3"
+  google_generative_ai:
+    dependency: "direct main"
+    description:
+      path: "pkgs/google_generative_ai"
+      ref: HEAD
+      resolved-ref: "19c1d6018b253ebfcd6a35eed7bc556cf6ff4d8e"
+      url: "https://github.com/google-gemini/generative-ai-dart"
+    source: git
+    version: "0.4.7"
   google_maps:
     dependency: transitive
     description:

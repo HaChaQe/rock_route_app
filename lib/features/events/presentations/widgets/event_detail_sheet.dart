@@ -5,6 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import '../../data/models/event_model.dart';
 import '../../../venues/presentation/providers/location_provider.dart';
+import '../../../ai_assistant/data/models/presentation/providers/chat_provider.dart';
+import '../../../ai_assistant/data/models/presentation/pages/chat_page.dart';
+
 
 void showEventDetailSheet(BuildContext context, EventModel event) {
   showModalBottomSheet(
@@ -169,6 +172,35 @@ void showEventDetailSheet(BuildContext context, EventModel event) {
                       //     ),
                       //   ),
                       // ),
+
+                      // 🤘 Barmene Sor: Konser özel versiyonu
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 12),
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: TextButton.icon(
+                            onPressed: () {
+                              // 🤘 Barmen'e konser hakkında "Dio vari" bir soru soruyoruz
+                              ref.read(chatProvider.notifier).sendMessage("${event.venueName} mekanındaki bu konser sence kafa açar mı? Bira dökülür mü?");
+                              
+                              Navigator.push(
+                                context, 
+                                MaterialPageRoute(builder: (context) => const ChatPage())
+                              );
+                            },
+                            style: TextButton.styleFrom(
+                              foregroundColor: AppConstants.textSecondary,
+                              backgroundColor: AppConstants.surfaceColor,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                side: BorderSide(color: Colors.white.withValues(alpha: 0.1))
+                              ),
+                            ),
+                            icon: const Icon(Icons.auto_awesome, color: AppConstants.secondaryColor),
+                            label: const Text("Ronnie'ye Danış: Bu konser kafa açar mı?"),
+                          ),
+                        ),
+                      ),
                       SafeArea(
                         top: false,
                         child: Container(

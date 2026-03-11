@@ -3,6 +3,8 @@ import '../../../../core/constants/app_constants.dart';
 import 'home_page.dart';
 import 'map_page.dart';
 import 'favorites_page.dart';
+import '../../../ai_assistant/data/models/presentation/pages/chat_page.dart';
+
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -25,6 +27,15 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: _pages[_currentIndex],
+
+      // 🤘 BARMEN FAB: Her zaman burada, her zaman hazır!
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => const ChatPage()));
+        },
+        backgroundColor: AppConstants.primaryColor, //
+        child: const Icon(Icons.bolt, color: Colors.white, size: 30),
+      ),
 
       bottomNavigationBar: NavigationBar(
         selectedIndex: _currentIndex,

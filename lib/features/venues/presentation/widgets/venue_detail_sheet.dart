@@ -6,6 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import '../providers/location_provider.dart';
 import '../providers/favorites_provider.dart';
+import '../../../ai_assistant/data/models/presentation/providers/chat_provider.dart';
+import '../../../ai_assistant/data/models/presentation/pages/chat_page.dart';
+
 
 void showVenueDetailSheet(BuildContext context, VenueModel venue) {
     showModalBottomSheet(
@@ -169,6 +172,33 @@ void showVenueDetailSheet(BuildContext context, VenueModel venue) {
                               
                               const SizedBox(height: 20),
                             ],
+                          ),
+                        ),
+                      ),
+
+                      // 🤘 Barmene Sor Butonu (Secondary Color dokunuşuyla)
+                      SizedBox(
+                        width: double.infinity,
+                        child: OutlinedButton.icon(
+                          onPressed: () {
+                            // 🤘 Barmen'e mekan bilgisini fırlatıp sayfayı açıyoruz
+                            ref.read(chatProvider.notifier).sendMessage("${venue.name} mekanı sence nasıl bir yer? Rock ruhu var mı?");
+                            
+                            Navigator.push(
+                              context, 
+                              MaterialPageRoute(builder: (context) => const ChatPage())
+                            );
+                          },
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: AppConstants.secondaryColor,
+                            side: const BorderSide(color: AppConstants.secondaryColor, width: 2),
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          ),
+                          icon: const Icon(Icons.auto_awesome, size: 20),
+                          label: const Text(
+                            "Ronnie'ye Sor: Mekan nasıl?", 
+                            style: TextStyle(fontWeight: FontWeight.bold)
                           ),
                         ),
                       ),
