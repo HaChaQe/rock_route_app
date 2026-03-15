@@ -202,22 +202,45 @@ class HomePage extends ConsumerWidget {
                 Expanded(
                   child: filteredState.when(
                     data: (venues) {
+                      // BOŞ DURUM (Mekan Bulunamadıysa)
                       if (venues.isEmpty) {
-                        return const Center(
-                          child: Text(
-                            "Bu kategoride mekan bulunamadı :/",
-                            style: TextStyle(color: AppConstants.secondaryColor, fontSize: 16),
+                        return RefreshIndicator(
+                          color: AppConstants.primaryColor,
+                          backgroundColor: AppConstants.surfaceColor,
+                          onRefresh: () async {
+                            ref.invalidate(venueProvider); // 🤘 Mekan verilerini yenile
+                          },
+                          child: ListView(
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            children: [
+                              SizedBox(height: MediaQuery.of(context).size.height * 0.2),
+                              const Center(
+                                child: Text(
+                                  "Bu kategoride mekan bulunamadı :/\n(Yenilemek için aşağı kaydır)",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(color: AppConstants.secondaryColor, fontSize: 16),
+                                ),
+                              ),
+                            ],
                           ),
                         );
                       }
-                      return Padding(
-                        padding: const EdgeInsets.only(
-                          left: AppConstants.defaultPadding,
-                          right: AppConstants.defaultPadding,
-                          top: AppConstants.defaultPadding,
-                          bottom: 3
-                        ),
+                      
+                      // DOLU DURUM (Mekan Listesi)
+                      return RefreshIndicator(
+                        color: AppConstants.primaryColor, // 🤘 Mekanlar için mor loading
+                        backgroundColor: AppConstants.surfaceColor,
+                        onRefresh: () async {
+                          ref.invalidate(venueProvider); // 🤘 Riverpod veriyi tekrar fetch eder
+                        },
                         child: ListView.builder(
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          padding: const EdgeInsets.only(
+                            left: AppConstants.defaultPadding,
+                            right: AppConstants.defaultPadding,
+                            top: AppConstants.defaultPadding,
+                            bottom: 3
+                          ),
                           itemCount: venues.length,
                           itemBuilder: (context, index) => VenueCard(venue: venues[index]),
                         ),
