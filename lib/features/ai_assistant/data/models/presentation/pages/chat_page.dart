@@ -36,7 +36,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
     return Scaffold(
       backgroundColor: AppConstants.backgroundColor,
       appBar: AppBar(
-        title: const Text("Ronnie", style: TextStyle(color: AppConstants.primaryColor, fontWeight: FontWeight.bold)),
+        title: const Text("Barmen Ronnie🤘", style: TextStyle(color: AppConstants.ronnieColor, fontWeight: FontWeight.bold)),
         backgroundColor: AppConstants.surfaceColor,
       ),
       body: Column(
@@ -56,7 +56,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
                     padding: const EdgeInsets.all(14),
                     constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.75),
                     decoration: BoxDecoration(
-                      color: msg.isUser ? AppConstants.primaryColor : AppConstants.surfaceColor,
+                      color: msg.isUser ? AppConstants.ronnieColor : AppConstants.surfaceColor,
                       borderRadius: BorderRadius.only(
                         topLeft: const Radius.circular(16),
                         topRight: const Radius.circular(16),
@@ -102,7 +102,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
                     ),
                   ),
                   IconButton(
-                    icon: const Icon(Icons.send_rounded, color: AppConstants.secondaryColor),
+                    icon: const Icon(Icons.send_rounded, color: AppConstants.ronnieColor),
                     onPressed: () {
                       if (_controller.text.trim().isNotEmpty) {
                         ref.read(chatProvider.notifier).sendMessage(_controller.text.trim());
