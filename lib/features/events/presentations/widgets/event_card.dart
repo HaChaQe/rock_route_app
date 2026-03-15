@@ -1,29 +1,18 @@
 import 'package:flutter/material.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../data/models/event_model.dart';
-import 'package:url_launcher/url_launcher.dart'; // Bilet linkine gitmek için
+import 'event_detail_sheet.dart';
+import 'package:intl/intl.dart';
 
 class EventCard extends StatelessWidget {
   final EventModel event;
 
   const EventCard({super.key, required this.event});
 
-  // Bilet al butonuna basılınca tarayıcıyı açacak fonksiyon
-  Future<void> _launchTicketUrl(BuildContext context) async {
-    if (event.ticketUrl.isNotEmpty) {
-      final Uri url = Uri.parse(event.ticketUrl);
-      if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
-        if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Bilet linki açılamadı!')),
-          );
-        }
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+  // DateTime nesnesini istediğimiz formata sokuyoruz
+  String simpleDate = DateFormat('dd.MM.yyyy').format(event.date);
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
@@ -38,106 +27,100 @@ class EventCard extends StatelessWidget {
         ],
       ),
       clipBehavior: Clip.hardEdge,
-      child: Row(
-        children: [
-          // SOL TARAF: Konser Afişi
-          SizedBox(
-            width: 120,
-            height: 140,
-            child: event.imageUrl.isNotEmpty
-                ? Image.network(
-                    event.imageUrl,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) => Container(
+      child: InkWell(
+        onTap: () => showEventDetailSheet(context, event),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start, // 🤘 Her şeyi üste dayar
+          children: [
+            // 1. SOL TARAF: Konser Afişi
+            SizedBox(
+              width: 110,
+              height: 110, // Yüksekliği kısalttık
+              child: event.imageUrl.isNotEmpty
+                  ? Image.network(
+                      event.imageUrl,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) => Container(
+                        color: Colors.grey[800],
+                        child: const Center(child: Icon(Icons.music_note, color: Colors.white54)),
+                      ),
+                    )
+                  : Container(
                       color: Colors.grey[800],
                       child: const Center(child: Icon(Icons.music_note, color: Colors.white54)),
                     ),
-                  )
-                : Container(
-                    color: Colors.grey[800],
-                    child: const Center(child: Icon(Icons.music_note, color: Colors.white54)),
-                  ),
-          ),
-          
-          // SAĞ TARAF: Konser Detayları
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Grup / Etkinlik Adı
-                  Text(
-                    event.name,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      color: AppConstants.textPrimary,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  
-                  // Mekan Adı
-                  Row(
-                    children: [
-                      const Icon(Icons.location_on, size: 14, color: AppConstants.primaryColor),
-                      const SizedBox(width: 4),
-                      Expanded(
-                        child: Text(
-                          event.venueName,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            color: AppConstants.textSecondary,
-                            fontSize: 12,
+            ),
+            
+            // 2. SAĞ TARAF: Detaylar
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // ÜST SATIR: Konser Adı ve 🤘 YANDAKİ BADGE (Tarih)
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            event.name,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              color: AppConstants.textPrimary,
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 4),
-                  
-                  // Tarih
-                  Row(
-                    children: [
-                      const Icon(Icons.calendar_month, size: 14, color: AppConstants.primaryColor),
-                      const SizedBox(width: 4),
-                      Text(
-                        event.date,
-                        style: const TextStyle(
-                          color: AppConstants.textSecondary,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  
-                  // Bilet Al Butonu
-                  if (event.ticketUrl.isNotEmpty)
-                    SizedBox(
-                      height: 32,
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppConstants.primaryColor,
-                          foregroundColor: Colors.white,
-                          padding: EdgeInsets.zero,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
+                        const SizedBox(width: 8),
+                        // TARİH BADGE (Yanda duruyor)
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: AppConstants.secondaryColor.withValues(alpha: 0.1),
+                            borderRadius: BorderRadius.circular(6),
+                            border: Border.all(color: AppConstants.secondaryColor.withValues(alpha: 0.5)),
+                          ),
+                          child: Text(
+                            simpleDate,
+                            style: const TextStyle(
+                              color: AppConstants.secondaryColor,
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
-                        onPressed: () => _launchTicketUrl(context),
-                        child: const Text('Bilet Bul', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
-                      ),
+                      ],
                     ),
-                ],
+                    const SizedBox(height: 12), // Aradaki boşluk
+                    
+                    // ALT SATIR: Mekan Adı (İkonla birlikte)
+                    Row(
+                      children: [
+                        const Icon(Icons.stadium_outlined, size: 14, color: AppConstants.secondaryColor),
+                        const SizedBox(width: 4),
+                        Expanded(
+                          child: Text(
+                            event.venueName,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              color: AppConstants.textSecondary,
+                              fontSize: 13,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
