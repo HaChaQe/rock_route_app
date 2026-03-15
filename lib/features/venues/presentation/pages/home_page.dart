@@ -129,31 +129,37 @@ class HomePage extends ConsumerWidget {
     final filteredState = ref.watch(filteredVenuesProvider);
     final selectedCategory = ref.watch(selectedCategoryProvider);
 
+    // 🤘 SİHİRLİ RENK DEĞİŞKENİMİZ BURADA!
+    // isEventView true (Konser) ise Yeşil (secondaryColor), false (Mekan) ise Mor (primaryColor)
+    final activeColor = isEventView ? AppConstants.secondaryColor : AppConstants.primaryColor;
+
     return Scaffold(
       backgroundColor: AppConstants.backgroundColor,
       appBar: AppBar(
         title: Text(
           isEventView ? "Yaklaşan Konserler" : AppConstants.appName,
-          style: const TextStyle(fontWeight: FontWeight.bold, color: AppConstants.primaryColor),
+          // 🤘 Başlık rengi dinamik oldu
+          style: TextStyle(fontWeight: FontWeight.bold, color: activeColor), 
         ),
         backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: false,
         actions: [
           IconButton(
-            icon: const Icon(Icons.explore, color: AppConstants.primaryColor, size: 28),
+            // 🤘 Arama ikonu rengi dinamik oldu
+            icon: Icon(Icons.explore, color: activeColor, size: 28),
             onPressed: () => _showCitySearchDialog(context, ref),
             tooltip: "Şehir Ara",
           ),
-          // 2. GİT-GEL BUTONUMUZ
+          // GİT-GEL BUTONUMUZ
           IconButton(
             icon: Icon(
               isEventView ? Icons.storefront_outlined : Icons.local_play_rounded,
-              color: AppConstants.primaryColor,
+              // 🤘 Buton ikon rengi dinamik oldu
+              color: activeColor, 
               size: 28,
             ),
             onPressed: () {
-              // Butona basınca şalterin yönünü değiştiriyoruz
               ref.read(isEventViewProvider.notifier).state = !isEventView;
             },
             tooltip: isEventView ? "Mekanlara Dön" : "Konserleri Gör",
@@ -162,11 +168,10 @@ class HomePage extends ConsumerWidget {
         ],
       ),
       
-      // 3. DİNAMİK GÖVDE: Şalter true ise Konserler, false ise Senin Mekanlar Listen
+      // DİNAMİK GÖVDE: Şalter true ise Konserler, false ise Mekanlar Listen
       body: isEventView
-          ? const EventsListView() // Ticketmaster Listesi
+          ? const EventsListView() // Ticketmaster Listesi (Bunun içindeki loading zaten yeşil yapmıştık)
           : Column(
-              // Senin Google Places Mekanlar Listen ve Kategori Çiplerin
               children: [
                 SizedBox(
                   height: 60,
@@ -189,7 +194,8 @@ class HomePage extends ConsumerWidget {
                             ),
                           ),
                           selected: isSelected,
-                          selectedColor: AppConstants.primaryColor,
+                          // 🤘 Çiplerin seçili rengi de dinamik oldu
+                          selectedColor: activeColor, 
                           backgroundColor: AppConstants.surfaceColor,
                           onSelected: (bool selected) {
                             ref.read(selectedCategoryProvider.notifier).state = category;
@@ -202,23 +208,24 @@ class HomePage extends ConsumerWidget {
                 Expanded(
                   child: filteredState.when(
                     data: (venues) {
-                      // BOŞ DURUM (Mekan Bulunamadıysa)
                       if (venues.isEmpty) {
                         return RefreshIndicator(
-                          color: AppConstants.primaryColor,
+                          // 🤘 Aşağı kaydırma loading rengi dinamik
+                          color: activeColor, 
                           backgroundColor: AppConstants.surfaceColor,
                           onRefresh: () async {
-                            ref.invalidate(venueProvider); // 🤘 Mekan verilerini yenile
+                            ref.invalidate(venueProvider);
                           },
                           child: ListView(
                             physics: const AlwaysScrollableScrollPhysics(),
                             children: [
                               SizedBox(height: MediaQuery.of(context).size.height * 0.2),
-                              const Center(
+                              Center(
                                 child: Text(
                                   "Bu kategoride mekan bulunamadı :/\n(Yenilemek için aşağı kaydır)",
                                   textAlign: TextAlign.center,
-                                  style: TextStyle(color: AppConstants.secondaryColor, fontSize: 16),
+                                  // 🤘 Boş liste yazısı dinamik
+                                  style: TextStyle(color: activeColor, fontSize: 16), 
                                 ),
                               ),
                             ],
@@ -226,12 +233,12 @@ class HomePage extends ConsumerWidget {
                         );
                       }
                       
-                      // DOLU DURUM (Mekan Listesi)
                       return RefreshIndicator(
-                        color: AppConstants.primaryColor, // 🤘 Mekanlar için mor loading
+                        // 🤘 Dolu listedeki loading rengi dinamik
+                        color: activeColor, 
                         backgroundColor: AppConstants.surfaceColor,
                         onRefresh: () async {
-                          ref.invalidate(venueProvider); // 🤘 Riverpod veriyi tekrar fetch eder
+                          ref.invalidate(venueProvider);
                         },
                         child: ListView.builder(
                           physics: const AlwaysScrollableScrollPhysics(),
@@ -295,22 +302,28 @@ class HomePage extends ConsumerWidget {
                 final cityName = cityController.text.trim();
                 if (cityName.isNotEmpty) {
                   try {
-                    // Geocoding paketi ile şehir adını koordinata çeviriyoruz
+                    // 1. ASYNC İŞLEM (Bekleme burada oluyor)
                     List<Location> locations = await locationFromAddress(cityName);
                     if (locations.isNotEmpty) {
                       final lat = locations.first.latitude;
                       final lng = locations.first.longitude;
                       
-                      // Riverpod hafızasını yeni şehirle güncelliyoruz!
+                      // Riverpod hafızasını yeni şehirle güncelliyoruz
                       ref.read(selectedCityProvider.notifier).state = CityLocation(lat, lng, cityName);
                     }
                   } catch (e) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Şehir bulunamadı, lütfen tekrar deneyin.')),
-                    );
+                    // 🤘 2. SİHİRLİ KORUMA: Await bittikten sonra adam hala sayfadaysa SnackBar göster
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Şehir bulunamadı, lütfen tekrar deneyin.')),
+                      );
+                    }
                   }
                 }
-                if (context.mounted) Navigator.pop(context); // Kutuyu kapat
+                // 3. KORUMA 2: Sayfa hala açıksa Dialog'u kapat
+                if (context.mounted) {
+                  Navigator.pop(context);
+                }
               },
               child: const Text("Ara"),
             ),
