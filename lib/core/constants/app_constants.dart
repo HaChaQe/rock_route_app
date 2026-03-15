@@ -7,12 +7,13 @@ class AppConstants {
 
   //Renk Paleti
   static const Color backgroundColor = Color(0xFF121212); //Ana arkaplan
-
   static const Color surfaceColor = Color(0xFF1E1E1E); //Kart ve yüzeyler
 
-  static const Color primaryColor = Color(0xFFBB86FC); //Vurgu
+  static const Color primaryColor = Color(0xFFBB86FC); //Vurgu (Mekanlar için Mor)
+  static const Color secondaryColor = Color(0xFF03DAC6); //İkincil (Konserler için Yeşil)
 
-  static const Color secondaryColor = Color(0xFF03DAC6); //İkincil
+  // 🤘 RONNIE'NİN ÖZEL RENGİ (Neon Turuncu)
+  static const Color ronnieColor = Color(0xFFFF6D00); 
 
   static const Color errorColor = Color(0xFFCF6679); //Hatalar
 
