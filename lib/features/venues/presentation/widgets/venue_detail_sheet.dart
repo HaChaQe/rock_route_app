@@ -178,7 +178,7 @@ void showVenueDetailSheet(BuildContext context, VenueModel venue) {
 
                       // 🤘 Barmene Sor Butonu (Secondary Color dokunuşuyla)
                       SizedBox(
-                        width: double.infinity,
+                        width: 300,
                         child: OutlinedButton.icon(
                           onPressed: () {
                             // 🤘 Barmen'e mekan bilgisini fırlatıp sayfayı açıyoruz
