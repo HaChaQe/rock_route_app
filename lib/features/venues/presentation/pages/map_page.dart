@@ -184,12 +184,11 @@ class _MapPageState extends ConsumerState<MapPage> {
               return Marker(
                 markerId: MarkerId('event_${event.id}'),
                 position: LatLng(lat, lng),
-                // Boyut ve gölge mekanlarla birebir aynı, sadece rengi Turuncu
                 icon: BitmapDescriptor.defaultMarkerWithHue(
                   HSVColor.fromColor(AppConstants.secondaryColor).hue, // Rengini Hue'ya çevirir!
                 ),
                 onTap: () {
-                  showEventDetailSheet(context, event);
+                  showEventDetailSheet(context, event, isVenueFocused: true);
                 },
               );
             }).whereType<Marker>().toSet(); 
